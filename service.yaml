@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx  # This should match the label in the Deployment
+  ports:
+    - port: 80  # The port exposed by the service
+      targetPort: 80  # The port the NGINX container listens on
+  type: LoadBalancer
