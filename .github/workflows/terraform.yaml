@@ -24,14 +24,14 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
         working-directory: ./Terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
         working-directory: ./Terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
