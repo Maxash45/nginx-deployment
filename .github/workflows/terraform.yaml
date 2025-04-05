@@ -34,18 +34,18 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./nginx-deployment/Terraform
+        working-directory: ./Terraform
 
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan \
             -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
             -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
-        working-directory: ./nginx-deployment/Terraform
+        working-directory: ./Terraform
 
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
             -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
             -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
-        working-directory: ./nginx-deployment/Terraform
+        working-directory: ./Terraform
