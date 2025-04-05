@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 resource "aws_ecs_cluster" "my_cluster" {
@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "my_task" {
 }
 
 resource "aws_ecs_service" "my_service" {
-  name            = "my-service"
+  name            = "my-service-1"
   cluster         = aws_ecs_cluster.my_cluster.id
   task_definition = aws_ecs_task_definition.my_task.arn
   desired_count   = 1
