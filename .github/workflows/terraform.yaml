@@ -41,6 +41,9 @@ jobs:
           terraform plan -out=tfplan \
             -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
             -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
+            -var="task_role_arn=arn:aws:iam::615299775895:role/YOUR_TASK_ROLE_NAME" \
+            -var='subnet_ids=["subnet-0123456789abcdef0", "subnet-abcdef0123456789"]' \
+            -var="security_group_id=sg-0123456789abcdef0"
         working-directory: ./Terraform
 
       - name: Terraform Apply
@@ -48,4 +51,7 @@ jobs:
           terraform apply -auto-approve \
             -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
             -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
+            -var="task_role_arn=arn:aws:iam::615299775895:role/YOUR_TASK_ROLE_NAME" \
+            -var='subnet_ids=["subnet-0123456789abcdef0", "subnet-abcdef0123456789"]' \
+            -var="security_group_id=sg-0123456789abcdef0"
         working-directory: ./Terraform
