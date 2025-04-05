@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+env:
+  AWS_REGION: us-east-2
+  AWS_ACCOUNT_ID: 615299775895
+  ECR_REPOSITORY: 615299775895.dkr.ecr.us-east-2.amazonaws.com/docker-images
+  IMAGE_TAG: latest  # You can override this dynamically if needed
+
 jobs:
   terraform:
     name: 'Terraform Deploy'
@@ -14,6 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -21,18 +34,18 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./Terraform
+        working-directory: ./nginx-deployment/Terraform
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-        working-directory: ./Terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform plan -out=tfplan \
+            -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
+            -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
+        working-directory: ./nginx-deployment/Terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-        working-directory: ./Terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform apply -auto-approve \
+            -var="container_image=${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" \
+            -var="execution_role_arn=arn:aws:iam::615299775895:role/YOUR_EXECUTION_ROLE_NAME"
+        working-directory: ./nginx-deployment/Terraform
